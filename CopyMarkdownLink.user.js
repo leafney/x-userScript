@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name        获取网页markdown链接
+// @name        一键获取网页markdown格式链接
 // @namespace   https://github.com/leafney
-// @version     0.4
-// @description 点击按钮，获取markdown格式的链接
+// @version     0.5
+// @description 点击按钮，获取当前网页markdown格式的链接
 // @author      leafney
 // @license     MIT
 // @match       *://*/*
@@ -31,6 +31,7 @@
         btn.className = "layui-btn layui-btn-sm"
         btn.innerHTML = "复制"
         btn.id = "copyBtn"
+        btn.setAttribute('type', 'button')
         document.body.appendChild(btn);
     }
     // 仅对当前页有效，排除iframe页面
@@ -41,25 +42,22 @@
         var $btn = document.getElementById("copyBtn")
         $btn.addEventListener("click", function () {
             if (!isclick) {
-                var text = `- [${document.title}](${document.URL})`
+                var text = `- [${document.title}](${document.URL}) `
                 console.log("copy=> " + text);
-                let oInput = document.createElement("input");
-                oInput.value = text;
-                document.body.appendChild(oInput);
-                oInput.select(); // 选择对象
-                document.execCommand("Copy"); // 执行浏览器复制命令
-                oInput.className = "oInput";
-                oInput.style.display = "none";
-                $btn.style.background = "red";
-                $btn.innerHTML = "复制成功";
-                setTimeout(() => {
-                    $btn.style.background = "green";
-                    $btn.innerHTML = "复制";
-                }, 3000);
-                isclick = true;
-                setTimeout(() => {
-                    isclick = false;
-                }, 3000);
+                if (navigator.clipboard) {
+                    // clipboard api 复制
+                    navigator.clipboard.writeText(text);
+                    $btn.style.background = "red";
+                    $btn.innerHTML = "复制成功";
+                    setTimeout(() => {
+                        $btn.style.background = "green";
+                        $btn.innerHTML = "复制";
+                    }, 3000);
+                    isclick = true;
+                    setTimeout(() => {
+                        isclick = false;
+                    }, 3000);
+                }
             }
         });
     }
