@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         提取JDCookie
 // @namespace    https://github.com/leafney
-// @version      0.1
+// @version      0.2
 // @description  一键提取京东Cookie
 // @author       leafney
-// @match        https://m.jd.com
+// @match        https://*.jd.com/*
 // @icon         https://www.jd.com/favicon.ico
 // @grant        GM_setClipboard
 // @grant        GM_notification

@@ -4,8 +4,9 @@
 // @version     0.5
 // @description 点击按钮，获取当前网页markdown格式的链接
 // @author      leafney
-// @license     MIT
 // @match       *://*/*
+// @grant       none
+// @license     MIT
 // ==/UserScript==
 
 (function () {
