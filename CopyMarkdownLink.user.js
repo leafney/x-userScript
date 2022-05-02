@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        一键获取网页markdown格式链接
 // @namespace   https://github.com/leafney
-// @version     0.5
+// @version     0.6
 // @description 点击按钮，获取当前网页markdown格式的链接
 // @author      leafney
 // @match       *://*/*
@@ -48,17 +48,27 @@
                 if (navigator.clipboard) {
                     // clipboard api 复制
                     navigator.clipboard.writeText(text);
-                    $btn.style.background = "red";
-                    $btn.innerHTML = "复制成功";
-                    setTimeout(() => {
-                        $btn.style.background = "green";
-                        $btn.innerHTML = "复制";
-                    }, 3000);
-                    isclick = true;
-                    setTimeout(() => {
-                        isclick = false;
-                    }, 3000);
+                } else {
+                    // 使用传统方法
+                    let oInput = document.createElement("input");
+                    oInput.value = text;
+                    document.body.appendChild(oInput);
+                    oInput.select(); // 选择对象
+                    document.execCommand("Copy"); // 执行浏览器复制命令
+                    oInput.className = "oInput";
+                    oInput.style.display = "none";
                 }
+                // 提示
+                $btn.style.background = "red";
+                $btn.innerHTML = "复制成功";
+                setTimeout(() => {
+                    $btn.style.background = "green";
+                    $btn.innerHTML = "复制";
+                }, 3000);
+                isclick = true;
+                setTimeout(() => {
+                    isclick = false;
+                }, 3000);
             }
         });
     }
