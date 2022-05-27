@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        一键获取网页markdown格式链接
 // @namespace   https://github.com/leafney
-// @version     0.6
+// @version     0.7
 // @description 点击按钮，获取当前网页markdown格式的链接
 // @author      leafney
 // @match       *://*/*
@@ -27,12 +27,12 @@
     }
     //创建复制按钮
     function addBtn() {
-        var btn = document.createElement('button');
-        btn.style = "top:30%; right:20px; position: fixed;z-index:1000;cursor:pointer;background:green;"
+        var btn = document.createElement('div');
+        btn.style = "top:30%; right:20px; position: fixed;z-index:1000;cursor:pointer;font-weight:500;background:green;"
         btn.className = "layui-btn layui-btn-sm"
         btn.innerHTML = "复制"
         btn.id = "copyBtn"
-        btn.setAttribute('type', 'button')
+        btn.setAttribute('role', 'button')
         document.body.appendChild(btn);
     }
     // 仅对当前页有效，排除iframe页面
