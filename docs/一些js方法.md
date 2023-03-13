@@ -82,3 +82,23 @@ function sendData()
     console.log(a);
 ```
 
+后来经过 ChatGPT 优化后的代码：
+
+```
+function getCookies(cookieStr, names) {
+  const cookies = cookieStr.split(';')
+    .map(cookie => cookie.trim().split('='))
+    .reduce((acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    }, {});
+
+  return names
+    .filter(name => cookies.hasOwnProperty(name))
+    .map(name => `${name}=${cookies[name]};`)
+    .join('');
+}
+```
+
+----
+
