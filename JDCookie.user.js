@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         提取JDCookie
 // @namespace    https://github.com/leafney
-// @version      0.3
+// @version      0.3.1
 // @description  一键提取京东Cookie信息
 // @author       leafney
 // @match        https://*.jd.com/*
@@ -30,7 +30,7 @@
 
     function addBtn() {
         let div = document.createElement('div');
-        div.innerHTML = "提取JDCookie";
+        div.innerHTML = "拷贝请求头Cookie后点击提取JDCookie";
         div.id = 'jdjd';
         div.style.cssText = "position:fixed;top:50%;left:40px;background:#FF5D40;color:white;height:30px;line-height:30px;z-index:100;padding:0 5px;text-align:center;border-radius:15px;font-size:15px;";
         document.body.appendChild(div);
