@@ -102,3 +102,10 @@ function getCookies(cookieStr, names) {
 
 ----
 
+#### 等待一下再执行
+
+```
+  setTimeout(() => {
+    
+  }, 2000)
+```
