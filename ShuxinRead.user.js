@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         舒欣浏览-知乎、简书、掘金、CSDN
+// @name         舒欣阅读-知乎、简书、掘金、CSDN
 // @namespace    https://github.com/leafney
-// @version      0.1.0
-// @description  去除页面中那些烦人的东东
+// @version      0.1.1
+// @description  去除页面中那些烦人的东东，舒欣 --> 舒心
 // @author       leafney
 // @match        *://*.zhihu.com/*
 // @match        *://*.csdn.net/*
