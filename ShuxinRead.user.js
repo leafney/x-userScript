@@ -136,9 +136,9 @@
         GM_addStyle(zhihu_style);
         
         // 需要等待页面加载完成之后执行
-        window.addEventListener('load',function(){
+        unsafeWindow.onload=function(){
             zhihuShowTime();
-        },false);
+        }
     }
 
     function initJianShu() {
@@ -168,6 +168,37 @@
 
     function initJueJin() {
         console.log('掘金设置');
+        let juejin_style ='';
+        /* 掘金首页相关 */ 
+        // 右侧边栏隐藏
+        juejin_style +=`div.timeline-container aside.index-aside{display:none;}`
+        // 内容区域宽度调整
+        juejin_style +=`div.timeline-container div.timeline-entry-list{width:90%;}`
+        // 左侧分类菜单显示完整
+        juejin_style +=`main.main-container div.index-nav{overflow:visible !important;}`
+
+
+        /* 文章详情相关 */ 
+        // 右侧浮动菜单：移除反馈、下载app
+        juejin_style +=`div#juejin div.suspension-panel button.meiqia-btn, span.more-btn{display:none;}`
+        // 左侧浮动菜单，隐藏 关注用户
+        juejin_style +=`div#juejin div.article-suspended-panel div.panel-btn.author{display:none;}`
+        // 顶部菜单栏，左侧 只保留前三项
+        juejin_style +=`nav.main-nav ul.phone-hide.isResourceVisible>.nav-item.link-item:nth-child(n+4){display:none;}`
+        // 顶部菜单栏，右侧 只保留搜索框
+        juejin_style +=`nav.main-nav ul.right-side-nav .nav-item:not(:first-child){display:none;}`
+        // 顶部菜单栏，右侧 搜索框增加右侧边距
+        juejin_style +=`nav.main-nav ul.right-side-nav ul.search-add-ul{margin-right:50px;}`
+        // 右侧边栏，隐藏 相关推荐、精选内容、圈子二维码
+        juejin_style +=`div#sidebar-container div.sidebar-block:not(:first-child){display:none;}`
+        
+
+        GM_addStyle(juejin_style);
+
+        // 页面加载完成后执行
+        unsafeWindow.onload=function(){
+            juejinLeftMenu();
+        }
     }
 
     /* ----------------------------- */ 
@@ -184,6 +215,22 @@
             dateCreate.setAttribute('class', 'ContentItem-time')
             parentDom.appendChild(dateCreate)
         }
+    }
+
+    /* ----------------------------- */ 
+
+    // 左侧浮动菜单，保留 评论、收藏、全屏
+    function juejinLeftMenu() {
+        let shareBtn = document.querySelector('div.share-btn.panel-btn')
+        let startBtn = shareBtn.previousElementSibling;
+        let commentBtn = startBtn.previousElementSibling;
+        let niceBtn = commentBtn.previousElementSibling;
+        let errorBtn = shareBtn.nextElementSibling;
+
+        // 移除点赞、报错、分享
+        niceBtn.remove();
+        errorBtn.remove();
+        shareBtn.remove();
     }
 
 })();
