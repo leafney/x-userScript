@@ -143,6 +143,23 @@
 
     function initJianShu() {
         console.log('简书设置');
+        let jianshu_style='';
+        /* 文章相关 */ 
+        
+        // 顶部菜单栏 logo
+        jianshu_style +=`div._2oDcyf a._1AawTM, div._7hb9O4, nav._3JYrtj{display: none !important;}`
+        // 隐藏 关注、赞赏按钮；底部评论栏；底部评论栏
+        jianshu_style +=`div#__next button._1OyPqC, footer, div._3Pnjry{display:none !important;}`
+        // 隐藏内容区域，右侧边栏，内容区域宽度调整
+        jianshu_style +=`aside._2OwGUo {display:none !important;} div[role="main"]>div._gp-ck{width:85%;}`
+        // 文章内容底部分类、点赞；二维码；用户名
+        jianshu_style +=`section.ouvJEz div._1kCBjS, div._13lIbp, div.d0hShY{display:none !important;}`
+        // 文章底部推荐文章列表
+        jianshu_style +=`section.ouvJEz:not(:first-child){display:none !important;}`
+        // 底部评论框
+        jianshu_style +=`div#note-page-comment{display:none !important;}`
+
+        GM_addStyle(jianshu_style);
     }
 
     function initCSDN() {

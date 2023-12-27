@@ -108,4 +108,9 @@ function getCookies(cookieStr, names) {
   setTimeout(() => {
     
   }, 2000)
+
+  // 页面加载完成后执行
+unsafeWindow.onload=function(){
+
+}
 ```
