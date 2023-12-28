@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         舒欣阅读-知乎、简书、掘金、CSDN
 // @namespace    https://github.com/leafney
-// @version      0.1.1
+// @version      0.1.2
 // @description  去除页面中那些烦人的东东，舒欣 --> 舒心
 // @author       leafney
 // @match        *://*.zhihu.com/*
@@ -19,6 +19,7 @@
 
     // Your code here...
     const url = window.location.href;
+    const pathname = window.location.pathname;
 
     const zhihuReg = /.*zhihu.com\.*/;
     const csdnReg= /.*csdn\.net\.*/;
@@ -26,21 +27,24 @@
     const juejinReg= /^https?:\/\/(juejin\.cn)\.*/;
 
     if (zhihuReg.test(url)){
-        initZhiHu();
+        initZhiHu(pathname);
     }else if(csdnReg.test(url)){
-        initCSDN();
+        initCSDN(pathname);
     }else if (jianshuReg.test(url)){
-        initJianShu();
+        initJianShu(pathname);
     }else if(juejinReg.test(url)){
-        initJueJin();
+        initJueJin(pathname);
     }else{
 
     }
 
-    function initZhiHu() {
+    function initZhiHu(pathname) {
         console.log('知乎设置');
         let zhihu_style='';
         /* 首页相关 */ 
+        // if (pathname.indexof('')>-1){
+
+        // }
 
         // 隐藏logo、版权信息
         zhihu_style += `
@@ -141,7 +145,7 @@
         }
     }
 
-    function initJianShu() {
+    function initJianShu(pathname) {
         console.log('简书设置');
         let jianshu_style='';
         /* 文章相关 */ 
@@ -162,41 +166,52 @@
         GM_addStyle(jianshu_style);
     }
 
-    function initCSDN() {
+    function initCSDN(pathname) {
         console.log('csdn设置');
     }
 
-    function initJueJin() {
+    function initJueJin(pathname) {
         console.log('掘金设置');
         let juejin_style ='';
-        /* 掘金首页相关 */ 
-        // 右侧边栏隐藏
-        juejin_style +=`div.timeline-container aside.index-aside{display:none;}`
-        // 内容区域宽度调整
-        juejin_style +=`div.timeline-container div.timeline-entry-list{width:90%;}`
-        // 左侧分类菜单显示完整
-        juejin_style +=`main.main-container div.index-nav{overflow:visible !important;}`
+
+        if (pathname.indexOf('/post')>-1){
+            console.log('掘金--文章详情页');
+            /* 文章详情相关 */ 
+            // 左侧浮动菜单，隐藏 关注用户
+            juejin_style +=`div#juejin div.article-suspended-panel div.panel-btn.author{display:none;}`
+            // 右侧边栏，隐藏 相关推荐、精选内容、搜索建议、关注二维码
+            juejin_style +=`div#sidebar-container>div:not(:first-child){display:none;}`
 
 
-        /* 文章详情相关 */ 
+        }else if(pathname.indexOf('/')>-1){
+            console.log('掘金--首页');
+            /* 掘金首页相关 */ 
+            // 右侧边栏隐藏
+            juejin_style +=`div.timeline-container aside.index-aside{display:none;}`
+            // 内容区域宽度调整
+            juejin_style +=`div.timeline-container div.timeline-entry-list{width:90%;}`
+            // 左侧分类菜单显示完整
+            juejin_style +=`main.main-container div.index-nav{overflow:visible !important;}`
+
+        }
+
+        /* 网站全局 */ 
         // 右侧浮动菜单：移除反馈、下载app
         juejin_style +=`div#juejin div.suspension-panel button.meiqia-btn, span.more-btn{display:none;}`
-        // 左侧浮动菜单，隐藏 关注用户
-        juejin_style +=`div#juejin div.article-suspended-panel div.panel-btn.author{display:none;}`
         // 顶部菜单栏，左侧 只保留前三项
         juejin_style +=`nav.main-nav ul.phone-hide.isResourceVisible>.nav-item.link-item:nth-child(n+4){display:none;}`
         // 顶部菜单栏，右侧 只保留搜索框
         juejin_style +=`nav.main-nav ul.right-side-nav .nav-item:not(:first-child){display:none;}`
         // 顶部菜单栏，右侧 搜索框增加右侧边距
         juejin_style +=`nav.main-nav ul.right-side-nav ul.search-add-ul{margin-right:50px;}`
-        // 右侧边栏，隐藏 相关推荐、精选内容、圈子二维码
-        juejin_style +=`div#sidebar-container div.sidebar-block:not(:first-child){display:none;}`
-        
+        // 创作者榜单浮层；
+        juejin_style +=`div.global-float-banner{display: none;}`
 
         GM_addStyle(juejin_style);
 
         // 页面加载完成后执行
         unsafeWindow.onload=function(){
+            juejinLoginLayer();
             juejinLeftMenu();
         }
     }
@@ -222,15 +237,44 @@
     // 左侧浮动菜单，保留 评论、收藏、全屏
     function juejinLeftMenu() {
         let shareBtn = document.querySelector('div.share-btn.panel-btn')
-        let startBtn = shareBtn.previousElementSibling;
-        let commentBtn = startBtn.previousElementSibling;
-        let niceBtn = commentBtn.previousElementSibling;
-        let errorBtn = shareBtn.nextElementSibling;
+        if(shareBtn){
+            let startBtn = shareBtn.previousElementSibling;
+            let commentBtn = startBtn.previousElementSibling;
+            let niceBtn = commentBtn.previousElementSibling;
+            let errorBtn = shareBtn.nextElementSibling;
+    
+            // 移除点赞、报错、分享
+            niceBtn.remove();
+            errorBtn.remove();
+            shareBtn.remove();
+        }
+    }
 
-        // 移除点赞、报错、分享
-        niceBtn.remove();
-        errorBtn.remove();
-        shareBtn.remove();
+    // 右下角登录提示浮层
+    function juejinLoginLayer() {
+        // 这个登录浮层只有滚动页面到一定距离才会出现
+        let x = 0;
+        // 设置一个计时器，每500毫秒检查一次元素是否存在
+        let intervalID = setInterval(function() {
+        // 使用 document.querySelector 来查找特定的元素
+        let loginRightLayer = document.querySelector('div.bottom-login-guide')
+
+        // 如果元素存在
+        if (loginRightLayer) {
+            // 执行相应的操作，比如移除元素
+            loginRightLayer.remove();
+
+            // 清除计时器
+            clearInterval(intervalID);
+        }
+
+        // 防止内存消耗
+        if(x>100){
+             // 清除计时器
+             clearInterval(intervalID);
+        }
+        x +=1;
+        }, 500);
     }
 
 })();
