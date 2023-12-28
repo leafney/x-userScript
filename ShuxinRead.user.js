@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         舒欣阅读-知乎、简书、掘金、CSDN
 // @namespace    https://github.com/leafney
-// @version      0.1.2
+// @version      0.1.3
 // @description  去除页面中那些烦人的东东，舒欣 --> 舒心
 // @author       leafney
 // @match        *://*.zhihu.com/*
@@ -19,7 +19,7 @@
 
     // Your code here...
     const url = window.location.href;
-    const pathname = window.location.pathname;
+    const path = window.location.pathname;
 
     const zhihuReg = /.*zhihu.com\.*/;
     const csdnReg= /.*csdn\.net\.*/;
@@ -27,13 +27,13 @@
     const juejinReg= /^https?:\/\/(juejin\.cn)\.*/;
 
     if (zhihuReg.test(url)){
-        initZhiHu(pathname);
+        initZhiHu(path);
     }else if(csdnReg.test(url)){
-        initCSDN(pathname);
+        initCSDN(path);
     }else if (jianshuReg.test(url)){
-        initJianShu(pathname);
+        initJianShu(path);
     }else if(juejinReg.test(url)){
-        initJueJin(pathname);
+        initJueJin(path);
     }else{
 
     }
@@ -41,101 +41,48 @@
     function initZhiHu(pathname) {
         console.log('知乎设置');
         let zhihu_style='';
+        
+        if (pathname.indexOf('/people')>-1){
+            /* 用户个人主页相关 */ 
+            // 用户个人主页，去除右侧边栏，左侧内容区域宽度增加
+            zhihu_style +=`div.Profile-sideColumn{display:none;}div.Profile-mainColumn{width:auto;}`;
+            
+        }else if (pathname.indexOf('/search')>-1){
+            /* 搜索相关 */ 
+            // 搜索列表页，隐藏右侧列表，左侧内容区域宽度调整
+            zhihu_style +=`div.Search-container div.SearchMain{width:95%;}div.Search-container div.css-knqde{display:none;}`;
+
+        }else if (pathname.indexOf('/question')>-1){
+            /* 问答主页相关 */ 
+            // 问题列表页，左侧内容宽度调整，字体调整
+            zhihu_style +=`div.Question-mainColumn{width:auto !important;font-size:medium;}`
+            // 问题列表页，隐藏右侧相关问题
+            zhihu_style +=`div.Question-sideColumn{display:none !important;}`
+
+        }else if (pathname.indexOf('/topic')>-1){
+            /* 话题相关 */ 
+            // 话题列表页，隐藏右侧边栏
+            zhihu_style +=`main.App-main div.css-1q32xh5{display:none;}`;
+
+        // }else if (pathname.indexOf('')>-1){
+
+        }
+
         /* 首页相关 */ 
-        // if (pathname.indexof('')>-1){
-
-        // }
-
         // 隐藏logo、版权信息
-        zhihu_style += `
-            .css-1hlrcxk {
-                display: none;
-            }
-            main.App-main footer {
-                display: none;
-            }
-        `;
+        zhihu_style += `.css-1hlrcxk{display:none;} main.App-main footer{display:none;}`;
 
         // 顶部左侧菜单，只保留首页
-        zhihu_style +=`
-            .AppHeader-inner ul.AppHeader-Tabs li:not(:first-child) {
-                display: none;
-            }
-        `;
+        zhihu_style +=`.AppHeader-inner ul.AppHeader-Tabs li:not(:first-child){display:none;}`;
 
         // 顶部右侧菜单，只保留用户头像
-        zhihu_style +=`
-            .AppHeader-userInfo>div:not(:last-child) {
-                display: none;
-            }
-        `;
+        zhihu_style +=`.AppHeader-userInfo>div:not(:last-child){display:none;}`;
 
         // 用户头像下拉菜单，去除 无障碍、关怀版
-        zhihu_style += `
-            .AppHeaderProfileMenu-container a.AppHeaderProfileMenu-item:nth-child(2),a.AppHeaderProfileMenu-item:nth-child(3){
-                display: none;
-            }
-        `;
+        zhihu_style += `.AppHeaderProfileMenu-container a.AppHeaderProfileMenu-item:nth-child(2),a.AppHeaderProfileMenu-item:nth-child(3){display:none;}`;
         
         // 首页列表内容部分，隐藏右侧边栏，左侧内容区域宽度调整
-        zhihu_style += `
-            main.App-main div.Topstory-container>div:not(:first-child){
-                display: none;
-            }
-            
-            main.App-main div.Topstory-container div.Topstory-mainColumn{
-                width: 95%;
-            }
-            
-            div.RichContent-inner img.origin_image[data-size="normal"] {
-                width: 80%;
-            }
-        `;
-
-        /* 用户个人主页相关 */ 
-        // 用户个人主页，去除右侧边栏，左侧内容区域宽度增加
-        zhihu_style +=`
-            div.Profile-sideColumn {
-                display: none;
-              }
-              div.Profile-mainColumn{
-                width: auto;
-              }
-        `;
-        
-        /* 搜索相关 */ 
-        // 搜索列表页，隐藏右侧列表，左侧内容区域宽度调整
-        zhihu_style +=`
-            div.Search-container div.SearchMain{
-                width: 95%;
-            }
-            div.Search-container div.css-knqde{
-                display: none;
-            }
-        `;
-
-        /* 问答主页相关 */ 
-        // 问题列表页，隐藏右侧相关问题，左侧内容宽度调整，字体调整
-        zhihu_style +=`
-            div.Question-sideColumn div.css-oyqdpg{
-                display: none;
-            }
-            div.Question-sideColumn div.Card[aria-label="更多回答信息"]{
-                display: none;
-            }
-            div.Question-mainColumn {
-                width: auto;
-                font-size: medium;
-            }
-        `;
-
-        /* 话题相关 */ 
-        // 话题列表页，隐藏右侧边栏
-        zhihu_style +=`
-            main.App-main div.css-1q32xh5 {
-                display:none;
-            }
-        `;
+        zhihu_style += `main.App-main div.Topstory-container>div:not(:first-child){display:none;}main.App-main div.Topstory-container div.Topstory-mainColumn{width:95%;}div.RichContent-inner img.origin_image[data-size="normal"]{width:80%;}`;
 
         GM_addStyle(zhihu_style);
         
