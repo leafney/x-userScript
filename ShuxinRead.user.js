@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         舒欣阅读-知乎、简书、掘金、CSDN
 // @namespace    https://github.com/leafney
-// @version      0.1.4
+// @version      0.1.5
 // @description  去除页面中那些烦人的东东，舒欣 --> 舒心
 // @author       leafney
 // @match        *://*.zhihu.com/*
@@ -13,7 +13,6 @@
 // @grant        GM_setClipboard
 // @grant        unsafeWindow
 // @run-at       document-start
-// @note         2023-12-30 v0.1.4 实现CSDN页面优化
 // ==/UserScript==
 
 (function() {
@@ -118,12 +117,17 @@
     function initCSDN(pathname) {
         console.log('csdn设置');
         let csdn_style = '';
-
         if (pathname.indexOf('/article/details')>-1){
             /* 文章详情页 */ 
-
-        
-
+           // 左侧边栏：用户信息、热门文章、最新评论、最新文章
+            csdn_style +=`aside.blog_container_aside{display:none !important;}`
+            // 主内容区域，宽度调整
+            csdn_style +=`div#mainBox main{width:100%;}`
+            // 内容底部浮动栏，内容底部多级分类名
+            csdn_style +=`div#mainBox div#toolBarBox .left-toolbox, #treeSkill{display:none !important;}`
+            // 复制内容后的提示
+            csdn_style +=`div#articleSearchTip{display:none !important;}`
+            
         // }else if (pathname.indexOf('')>-1){
 
         }
@@ -133,18 +137,11 @@
         csdn_style +=`div.passport-login-container, div.passport-login-tip-container{display:none !important;}`
         // 右下角边栏 只保留返回顶部
         csdn_style +=`div.csdn-side-toolbar div.sidetool-writeguide-box, div.csdn-side-toolbar>a:not(:last-child){display:none;}`
-        // 左侧边栏：用户信息、热门文章、最新评论、最新文章
-        csdn_style +=`aside.blog_container_aside{display:none !important;}`
-        // 主内容区域，宽度调整
-        csdn_style +=`div#mainBox main{width:100%;}`
-        // 内容底部浮动栏
-        csdn_style +=`div#mainBox div#toolBarBox .left-toolbox{display:none !important;}`
         // 底部版权信息，相关推荐
         csdn_style +=`div#copyright-box, div#recommendNps{display:none !important;}`
         // 顶部导航栏，左右两侧，只保留搜索栏
         csdn_style +=`div#csdn-toolbar .toolbar-container-left,.toolbar-container-right{display:none !important;}`
-        // 复制内容后的提示
-        csdn_style +=`div#articleSearchTip{display:none !important;}`
+        
         // 
         // csdn_style +=``
 
@@ -155,7 +152,7 @@
             csdnRecListClear();
             csdnCategoryListRmvPayItem();
             csdnNoLoginCopyCode();
-        }, 2000)
+        }, 1500)
 
     }
 
@@ -323,12 +320,12 @@
 
     // TODO 内容可复制
     function csdnContentCopy() {
-        let box = document.querySelector('div.blog-content-box')
-        if(box){
-            box.addEventListener('copy',function(e){
-                console.log('尝试复制');
-            })
-        }
+        // let box = document.querySelector('div.blog-content-box')
+        // if(box){
+        //     box.addEventListener('copy',function(e){
+        //         console.log('尝试复制');
+        //     })
+        // }
     }
 
 })();
