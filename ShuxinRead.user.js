@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         舒欣阅读-知乎、简书、掘金、CSDN
 // @namespace    https://github.com/leafney
-// @version      0.1.3
+// @version      0.1.4
 // @description  去除页面中那些烦人的东东，舒欣 --> 舒心
 // @author       leafney
 // @match        *://*.zhihu.com/*
@@ -10,8 +10,10 @@
 // @match        *://*.juejin.cn/*
 // @icon         http://zhihu.com/favicon.ico
 // @grant        GM_addStyle
+// @grant        GM_setClipboard
 // @grant        unsafeWindow
 // @run-at       document-start
+// @note         2023-12-30 v0.1.4 实现CSDN页面优化
 // ==/UserScript==
 
 (function() {
@@ -115,6 +117,50 @@
 
     function initCSDN(pathname) {
         console.log('csdn设置');
+        let csdn_style = '';
+
+        if (pathname.indexOf('/article/details')>-1){
+            /* 文章详情页 */ 
+
+        
+
+        // }else if (pathname.indexOf('')>-1){
+
+        }
+
+        /* 全局相关 */ 
+        // 登录弹窗; 右下角登录提示
+        csdn_style +=`div.passport-login-container, div.passport-login-tip-container{display:none !important;}`
+        // 右下角边栏 只保留返回顶部
+        csdn_style +=`div.csdn-side-toolbar div.sidetool-writeguide-box, div.csdn-side-toolbar>a:not(:last-child){display:none;}`
+        // 左侧边栏：用户信息、热门文章、最新评论、最新文章
+        csdn_style +=`aside.blog_container_aside{display:none !important;}`
+        // 主内容区域，宽度调整
+        csdn_style +=`div#mainBox main{width:100%;}`
+        // 内容底部浮动栏
+        csdn_style +=`div#mainBox div#toolBarBox .left-toolbox{display:none !important;}`
+        // 底部版权信息，相关推荐
+        csdn_style +=`div#copyright-box, div#recommendNps{display:none !important;}`
+        // 顶部导航栏，左右两侧，只保留搜索栏
+        csdn_style +=`div#csdn-toolbar .toolbar-container-left,.toolbar-container-right{display:none !important;}`
+        // 
+        // csdn_style +=``
+        // 
+        // csdn_style +=``
+
+        GM_addStyle(csdn_style);
+
+        // 
+        unsafeWindow.onload=function(){
+           
+        }
+        // 
+        setTimeout(() => {
+            csdnRecListClear();
+            csdnCategoryListRmvPayItem();
+            csdnNoLoginCopyCode();
+        }, 2000)
+
     }
 
     function initJueJin(pathname) {
@@ -222,6 +268,67 @@
         }
         x +=1;
         }, 500);
+    }
+
+    /* ----------------------------- */ 
+
+    // 相关推荐文章，去除下载资源的链接，只保留博客文章类，需要延迟执行
+    function csdnRecListClear() {
+        let rec_list = document.querySelectorAll('div.recommend-item-box')
+        for (let rec of rec_list) {
+            let rec_url = rec.getAttribute('data-url')
+            if (rec_url && rec_url.indexOf('download.csdn.net')>-1){
+                rec.remove();
+            }
+        }
+    }
+
+    // 右侧分类列表，移除需要付费的分类
+    function csdnCategoryListRmvPayItem() {
+        let cate_list=document.querySelectorAll('#kind_person_column li a.special-column-name')
+        cate_list.forEach((ele)=>{
+            const payTag=ele.querySelector('span.pay-tag')
+            if (payTag){
+                ele.parentElement.remove();
+            }
+        })
+    }
+
+    // 代码块免登录复制
+    function csdnNoLoginCopyCode() {
+        let codeShowPres=document.querySelectorAll('pre.set-code-show')
+        codeShowPres.forEach((pre)=>{
+            let hljsBtn = pre.querySelector('div.hljs-button')
+            if(hljsBtn && hljsBtn.parentElement == pre){
+                pre.removeChild(hljsBtn)
+            }
+
+            const newBtn = document.createElement('div')
+            newBtn.classList.add('hljs-button','active')
+            newBtn.setAttribute('data-title','免登录复制')
+
+            newBtn.addEventListener('click',function(e){
+                let _this=e.target;
+                const code =_this.parentNode.innerText;
+                GM_setClipboard(code);
+                _this.setAttribute("data-title", "复制成功");
+                setTimeout(function(){
+                    _this.setAttribute("data-title", "免登录复制");
+                }, 1000);
+            })
+            pre.appendChild(newBtn);
+        })
+    }
+
+    // TODO 内容可复制
+    function csdnContentCopy() {
+        let box = document.querySelector('div.blog-content-box')
+        if(box){
+            box.addEventListener('copy',function(e){
+                console.log('尝试复制');
+                e.stopPropagation();e.preventDefault();
+            })
+        }
     }
 
 })();
