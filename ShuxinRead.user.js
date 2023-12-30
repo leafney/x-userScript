@@ -143,17 +143,13 @@
         csdn_style +=`div#copyright-box, div#recommendNps{display:none !important;}`
         // 顶部导航栏，左右两侧，只保留搜索栏
         csdn_style +=`div#csdn-toolbar .toolbar-container-left,.toolbar-container-right{display:none !important;}`
-        // 
-        // csdn_style +=``
+        // 复制内容后的提示
+        csdn_style +=`div#articleSearchTip{display:none !important;}`
         // 
         // csdn_style +=``
 
         GM_addStyle(csdn_style);
 
-        // 
-        unsafeWindow.onload=function(){
-           
-        }
         // 
         setTimeout(() => {
             csdnRecListClear();
@@ -318,6 +314,11 @@
             })
             pre.appendChild(newBtn);
         })
+
+        let codes=document.querySelectorAll('code')
+        codes.forEach((c)=>{
+            c.contentEditable=true;
+        })
     }
 
     // TODO 内容可复制
@@ -326,7 +327,6 @@
         if(box){
             box.addEventListener('copy',function(e){
                 console.log('尝试复制');
-                e.stopPropagation();e.preventDefault();
             })
         }
     }
