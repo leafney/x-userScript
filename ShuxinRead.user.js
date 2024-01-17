@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         舒欣阅读-知乎、简书、掘金、CSDN、X
 // @namespace    https://github.com/leafney
-// @version      0.2.0
+// @version      0.2.1
 // @description  去除页面中那些烦人的东东，舒欣 --> 舒心
 // @author       leafney
 // @match        *://*.zhihu.com/*
@@ -210,9 +210,11 @@
         console.log('twitter设置');
         let twitter_style ='';
         // 隐藏右侧边栏
-        twitter_style +=`div.r-fif9oo[data-testid="sidebarColumn"]{display: none;}`
+        twitter_style += `div.r-fif9oo,div.r-zso239[data-testid="sidebarColumn"]{display: none;}`
         // 调整内容宽度
-        twitter_style +=`div.r-1ye8kvj{max-width:750px !important;}`
+        twitter_style += `div.r-1ye8kvj{max-width:750px !important;}`
+        // 小屏显示时的宽度
+        twitter_style += `div.r-33ulu8{width:900px !important;}`;
 
         GM_addStyle(twitter_style);
     }
