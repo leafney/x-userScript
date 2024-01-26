@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         舒欣阅读-知乎、简书、掘金、CSDN、X
 // @namespace    https://github.com/leafney
-// @version      0.2.2
+// @version      0.2.3
 // @description  去除页面中那些烦人的东东，舒欣 --> 舒心
 // @author       leafney
 // @match        *://*.zhihu.com/*
@@ -151,13 +151,18 @@
 
         GM_addStyle(csdn_style);
 
-        // 
-        setTimeout(() => {
-            csdnRecListClear();
-            csdnCategoryListRmvPayItem();
-            csdnNoLoginCopyCode();
-        }, 1500)
+        // 页面加载完成后执行
+        unsafeWindow.onload=function(){
 
+
+            // 等待一下再执行
+            setTimeout(() => {
+                csdnRecListClear();
+                csdnCategoryListRmvPayItem();
+                csdnNoLoginCopyCode();
+            }, 1500);
+        }
+        
     }
 
     function initJueJin(pathname) {
@@ -203,7 +208,11 @@
         unsafeWindow.onload=function(){
             juejinLoginLayer();
             juejinLeftMenu();
-            juejinNoLinkRedirect();
+            
+            // 页面加载完成后，等待一下再执行
+            setTimeout(() => {
+                juejinNoLinkRedirect();
+            }, 1500);
         }
     }
 
