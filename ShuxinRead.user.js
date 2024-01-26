@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         舒欣阅读-知乎、简书、掘金、CSDN、X
 // @namespace    https://github.com/leafney
-// @version      0.2.1
+// @version      0.2.2
 // @description  去除页面中那些烦人的东东，舒欣 --> 舒心
 // @author       leafney
 // @match        *://*.zhihu.com/*
@@ -203,6 +203,7 @@
         unsafeWindow.onload=function(){
             juejinLoginLayer();
             juejinLeftMenu();
+            juejinNoLinkRedirect();
         }
     }
 
@@ -279,6 +280,24 @@
         }
         x +=1;
         }, 500);
+    }
+
+    // 外部链接去除跳转重定向提示
+    function juejinNoLinkRedirect(){
+        let count = 0;
+        let a_links = document.querySelectorAll('a');
+        for (let link of a_links) {
+            let link_href = link.getAttribute('href')
+            if (link_href && link_href.indexOf('link.juejin.cn?target')>-1){
+                let link_target = link_href.split('target=')[1]
+                if (link_target){
+                    let the_target = decodeURIComponent(link_target)
+                    link.setAttribute('href',the_target)
+                    count+=1
+                }
+            }
+        }
+        console.log(`当前页面共优化 ${count} 条外链`);
     }
 
     /* ----------------------------- */ 
